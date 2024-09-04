@@ -1,0 +1,64 @@
+//asda
+faro.receiver "integrations_app_agent_receiver" {
+    server {
+        cors_allowed_origins = ["*"]
+        listen_address = "0.0.0.0"
+        listen_port = 3333
+        max_allowed_payload_size = "10MiB"
+
+        rate_limiting {
+            rate = 100
+        }
+    }
+
+    output {
+        logs   = [loki.process.add_label.receiver]
+        traces = [otelcol.exporter.otlphttp.trace_write.input]    
+   }
+}
+
+loki.process "add_label" {
+        stage.logfmt {
+        mapping = {
+            "level" = "",
+            "kind" = "",
+            "type"="",
+            "app_name"="",
+            "message"= "",
+            "browser_name"= "",
+            "browser_version" = "",
+        }
+    }
+
+    stage.labels {
+        values = {
+            "level" = "level",
+            "kind" = "kind",
+            "type" = "type",
+            "app_name" = "app_name",
+            "message" = "message",
+            "browser_name" = "browser_name",
+            "browser_version" = "",
+
+        }
+    }
+
+    forward_to = [loki.write.logs_write_client.receiver]
+}
+
+loki.write "logs_write_client" {
+    endpoint {
+        url = "http://loki:3100/loki/api/v1/push"
+    }
+}
+
+otelcol.exporter.otlphttp "trace_write" {
+
+    client {
+        endpoint = "http://tempo:4318"
+        tls {  
+            insecure             = true
+            insecure_skip_verify = true
+        }
+    }
+}

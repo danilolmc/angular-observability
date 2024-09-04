@@ -1,27 +1,64 @@
-# TestingDeferBlocks
+# Angular Observabiity
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.8.
+This is an Angular project for introducing observability concepts in Front-end Applcations through Grafana Stack
 
-## Development server
+![Angular Posts App Grafana Dashboard](./angular-obs.png)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## Code scaffolding
+# Tecnologies
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- Angular 17
+- Docker
+- Grafana Alloy
+- Grafana Faro SDK
+- Grafana Loki
+- Grafana Tempo
 
-## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Create Grafana Stack Infra
 
-## Running unit tests
+1. Make sure you have docker and docker compose installed
+2. Navigate to `observability/` directory
+3. Raise de containers by running `docker compose up`
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
+## Running Angular application
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+1. Make sure you have Angular CLI installed
+2. Install the projects dependencies by running `npm install` or the equivalent installation command of your package manager
+3. Raise the Angular application by running `npm start`
 
-## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Setting up data sources in Grafana
+
+##### Grafana Loki
+
+1. Open `http://localhost:3000` on your browser;
+2. On Grafana UI side Menu, go to data source > add new data source > search for loki;
+3. After that, in Grafana Loki settings connection field, type Grafana Loki endpoint: `http://loki:3100` and click on "Save and Test" button;  
+4. You might see a green alert message indicating the connection succeed
+
+##### Grafana Tempo
+
+1. Open `http://localhost:3000` on your browser;
+2. On Grafana UI side Menu, go to data source > add new data source > search for tempo;
+3. After that, in Grafana Tempo settings connection field, type Grafana Loki endpoint: `http://tempo:3200` and click on "Save and Test" button;  
+4. You might see a green alert message indicating the connection succeed
+
+
+## Adding grafana graphic frontend dashbboard
+
+Even thought, with the previous configurations, you are already able to see logs and traces in Grafana UI, you also can also see your data throught a graphic dashboard, for that, just:
+
+1. Open `http://localhost:3000` on your browser;
+2. On Grafana UI side menu, go to Dashboards;
+3. In a new tab, open the link https://github.com/grafana/faro-web-sdk/blob/main/dashboards/frontend-application.json, and make the download of the json file;
+4. After that, return to grafana ui dashboards > click "new" button > "New Dashboard"
+5. Next, click on "Import Dashboard" button and make de upload of the previously downloaded json file;
+6. After, select the Loki data source on logs input field and click import.
+
+It's also possible to define these data sources and dashboards previously with proper initialization config, but this could be future talk!
+
+Now everything its up and running, interact with the Angular application for a while, after go the dashboard you created to see the data, that's all!
+
+Thanks for reading! 😉
